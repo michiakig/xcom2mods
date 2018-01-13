@@ -13,6 +13,7 @@ function bool ClickToPath()
 	local int ActionIndex;
 	local int TargetIndex;
 	local string ConfirmSound;
+
 	local XComCoverPoint CoverPoint;
 	local vector vDestination;
 	local bool bFoundCover;
@@ -56,7 +57,7 @@ function bool ClickToPath()
 	vDestination = `XWORLD.GetPositionFromTileCoordinates(PathingPawn.LastDestinationTile);
 	bFoundCover = `XWORLD.GetCoverPoint(vDestination, CoverPoint);
 
-	if (!bFoundCover) {
+	if (!bFoundCover && !DoesPathEndInEvacZone(PathingPawn)) {
 		// Save the path before showing the pop up
 		SavedPathTiles.Length = 0;
 		foreach PathingPawn.PathTiles(PathTile) {
@@ -69,6 +70,25 @@ function bool ClickToPath()
 
 	// we couldn't do a melee attack, so just do a normal path
 	return XComTacticalController(Outer).PerformPath(GetActiveUnit(), true /*bUserCreated*/);
+}
+
+private function bool DoesPathEndInEvacZone(XComPathingPawn PathingPawn)
+{
+	local XComGameState_EvacZone EvacZoneState;
+	local TTile Destination;
+	local TTile EvacMin;
+	local TTile EvacMax;
+
+	Destination = PathingPawn.LastDestinationTile;
+	EvacZoneState = class'XComGameState_EvacZone'.static.GetEvacZone(eTeam_XCom);
+	class'XComGameState_EvacZone'.static.GetEvacMinMax(EvacZoneState.CenterLocation, EvacMin, EvacMax);
+
+	return	Destination.X >= EvacMin.X &&
+			Destination.Y >= EvacMin.Y &&
+			Destination.Z >= EvacMin.Z &&
+			Destination.X <= EvacMax.X &&
+			Destination.Y <= EvacMax.Y &&
+			Destination.Z <= EvacMax.Z ;
 }
 
 private function ShowMisclickConfirmPopup()
