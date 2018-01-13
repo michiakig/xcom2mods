@@ -50,7 +50,8 @@ function bool ClickToPath()
 		}
 	}
 
-	if (AnyVisibleEnemies(PathingPawn) && !DoesPathEndInCover(PathingPawn) && !DoesPathEndInEvacZone(PathingPawn)) {
+	if (AnyVisibleEnemiesNotLost(PathingPawn) && !DoesPathEndInCover(PathingPawn) && !DoesPathEndInEvacZone(PathingPawn))
+	{
 		// Save the path before showing the pop up
 		SavedPathTiles.Length = 0;
 		foreach PathingPawn.PathTiles(PathTile) {
@@ -65,15 +66,31 @@ function bool ClickToPath()
 	return XComTacticalController(Outer).PerformPath(GetActiveUnit(), true /*bUserCreated*/);
 }
 
-private function bool AnyVisibleEnemies(XComPathingPawn PathingPawn)
+private function bool AnyVisibleEnemiesNotLost(XComPathingPawn PathingPawn)
 {
 	local array<StateObjectReference> VisibleEnemies;
+	local StateObjectReference EnemyRef;
+	local XComGameState_Unit EnemyState;
 	local XComGameState_Unit ActiveUnitState;
 
 	ActiveUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(GetActiveUnit().ObjectID));
 	class'X2TacticalVisibilityHelpers'.static.GetAllVisibleEnemyTargetsForUnit(ActiveUnitState.ObjectID, VisibleEnemies);
 
-	return VisibleEnemies.Length > 0;
+	if (VisibleEnemies.Length == 0)
+	{
+		return false;
+	}
+
+	foreach VisibleEnemies(EnemyRef) {
+		EnemyState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EnemyRef.ObjectID));
+		if (EnemyState.GetMyTemplate().CharacterGroupName != 'TheLost')
+		{
+			// Found a visible enemy that is not a Lost
+			return true;
+		}
+	}
+	// No visible enemies or only Lost
+	return false;
 }
 
 private function bool DoesPathEndInCover(XComPathingPawn PathingPawn)
