@@ -88,9 +88,17 @@ private function ShowMisclickConfirmPopup()
 	presentationLayer.UIRaiseDialog(dialog);
 }
 
+`if(`isdefined(WOTC))
+simulated private function DialogCallback(Name eAction)
+`else
 simulated private function DialogCallback(eUIAction eAction)
+`endif
 {
+`if(`isdefined(WOTC))
+	if (eAction == 'eUIAction_Accept')
+`else
 	if (eAction == eUIAction_Accept)
+`endif
 	{
 		PerformPathWithTilePath(GetActiveUnit(), SavedPathTiles, true);
 		// we're done with the saved path, so empty the array
