@@ -50,7 +50,7 @@ function bool ClickToPath()
 		}
 	}
 
-	if (!DoesPathEndInCover(PathingPawn) && !DoesPathEndInEvacZone(PathingPawn)) {
+	if (AnyVisibleEnemies(PathingPawn) && !DoesPathEndInCover(PathingPawn) && !DoesPathEndInEvacZone(PathingPawn)) {
 		// Save the path before showing the pop up
 		SavedPathTiles.Length = 0;
 		foreach PathingPawn.PathTiles(PathTile) {
@@ -63,6 +63,17 @@ function bool ClickToPath()
 
 	// we couldn't do a melee attack, so just do a normal path
 	return XComTacticalController(Outer).PerformPath(GetActiveUnit(), true /*bUserCreated*/);
+}
+
+private function bool AnyVisibleEnemies(XComPathingPawn PathingPawn)
+{
+	local array<StateObjectReference> VisibleEnemies;
+	local XComGameState_Unit ActiveUnitState;
+
+	ActiveUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(GetActiveUnit().ObjectID));
+	class'X2TacticalVisibilityHelpers'.static.GetAllVisibleEnemyTargetsForUnit(ActiveUnitState.ObjectID, VisibleEnemies);
+
+	return VisibleEnemies.Length > 0;
 }
 
 private function bool DoesPathEndInCover(XComPathingPawn PathingPawn)
