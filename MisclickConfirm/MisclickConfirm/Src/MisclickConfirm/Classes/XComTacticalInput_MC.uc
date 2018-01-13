@@ -13,10 +13,6 @@ function bool ClickToPath()
 	local int ActionIndex;
 	local int TargetIndex;
 	local string ConfirmSound;
-
-	local XComCoverPoint CoverPoint;
-	local vector vDestination;
-	local bool bFoundCover;
 	local TTile PathTile;
 
 	if(`XCOMVISUALIZATIONMGR.VisualizerBlockingAbilityActivation())
@@ -54,10 +50,7 @@ function bool ClickToPath()
 		}
 	}
 
-	vDestination = `XWORLD.GetPositionFromTileCoordinates(PathingPawn.LastDestinationTile);
-	bFoundCover = `XWORLD.GetCoverPoint(vDestination, CoverPoint);
-
-	if (!bFoundCover && !DoesPathEndInEvacZone(PathingPawn)) {
+	if (!DoesPathEndInCover(PathingPawn) && !DoesPathEndInEvacZone(PathingPawn)) {
 		// Save the path before showing the pop up
 		SavedPathTiles.Length = 0;
 		foreach PathingPawn.PathTiles(PathTile) {
@@ -70,6 +63,15 @@ function bool ClickToPath()
 
 	// we couldn't do a melee attack, so just do a normal path
 	return XComTacticalController(Outer).PerformPath(GetActiveUnit(), true /*bUserCreated*/);
+}
+
+private function bool DoesPathEndInCover(XComPathingPawn PathingPawn)
+{
+	local XComCoverPoint CoverPoint;
+	local vector vDestination;
+
+	vDestination = `XWORLD.GetPositionFromTileCoordinates(PathingPawn.LastDestinationTile);
+	return `XWORLD.GetCoverPoint(vDestination, CoverPoint);
 }
 
 private function bool DoesPathEndInEvacZone(XComPathingPawn PathingPawn)
