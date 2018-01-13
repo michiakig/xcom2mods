@@ -2,8 +2,8 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Guid>fa9b04b1-c447-4ce3-b608-d6f7a7d0e648</Guid>
-    <Name>MisclickConfirm</Name>
-    <Description>Adds a confirmation modal before moving one of your soldiers out of cover (in case of misclicking)</Description>
+    <Name>Misclick Confirm</Name>
+    <Description>This mod adds a confirmation pop up whenever you order a soldier to move somewhere without cover, to prevent accidental misclicking ending your Ironman campaign.</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>MisclickConfirm</AssemblyName>
     <RootNamespace>MisclickConfirm</RootNamespace>
@@ -19,8 +19,13 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="ModPreview.jpg" />
-    <Content Include="ReadMe.txt" />
+    <Content Include="README.Vanilla.txt">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\MisclickConfirm\Classes\XComTacticalInput_MC.uc" />
+    <Content Include="README.WOTC.txt">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
@@ -31,7 +36,6 @@
     <Folder Include="Src\MisclickConfirm\Classes" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
-
   <ItemGroup>
     <DirsToClean Include="C:\Program Files (x86)\Steam\steamapps\common\XCOM 2\XComGame\Mods" />
     <DirsToClean Include="C:\Program Files (x86)\Steam\steamapps\common\XCOM 2\XCom2-WarOfTheChosen\XComGame\Mods" />
