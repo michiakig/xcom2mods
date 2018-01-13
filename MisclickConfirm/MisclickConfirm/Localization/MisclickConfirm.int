@@ -1,0 +1,5 @@
+[XComTacticalInput_MC]
+DialogueTitle=Misclick Confirm
+DialogueText=Are you sure you want to move out of cover?
+AcceptLabel=Yes
+CancelLabel=No
