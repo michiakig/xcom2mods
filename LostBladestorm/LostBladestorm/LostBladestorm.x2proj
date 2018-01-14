@@ -2,8 +2,16 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Guid>306647de-f3c8-4a42-a2d9-1b4640d82dd5</Guid>
-    <Name>LostBladestorm</Name>
-    <Description>LostBladestorm</Description>
+    <Name>Lost Bladestorm</Name>
+    <Description>This mod gives the Bladestorm ability to all Lost, making them more dangerous. (to be clear, does not equip them with swords, just gives them reactions using their normal melee attack)
+
+Balance
+
+- In my limited testing this has the potential to make the Lost significantly more dangerous, and I haven't made any attempts yet to balance it. Looking for feedback if anyone has ideas on how to adjust it
+
+Known bugs
+
+- There's something wrong with animations, especially when Lost react to certain attacks. For example, in the first video the Sharpshooter uses her pistol, which triggers a reaction, but the animation is the rifle attack. I think this is just a cosmetic bug and the game logic is not affected (note that in the example the rifle shot did not use any ammo), but be warned there may be other issues like this.</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>LostBladestorm</AssemblyName>
     <RootNamespace>LostBladestorm</RootNamespace>
@@ -20,6 +28,7 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="README.txt" />
+    <Content Include="ModPreview.jpg" />
     <Content Include="Src\LostBladestorm\Classes\X2Ability_LostBladestormAttack.uc">
       <SubType>Content</SubType>
     </Content>
