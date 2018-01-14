@@ -29,9 +29,6 @@
     <Content Include="Src\LostBladestorm\Classes\X2DownloadableContentInfo_LostBladestorm.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LostBladestorm\Classes\X2Effect_ApplyWeaponDamage_LB.uc">
-      <SubType>Content</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config" />
@@ -43,28 +40,4 @@
     <Folder Include="Src\LostBladestorm\Classes" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
-  <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <InputFilename ParameterType="System.String" Required="true" />
-      <OutputFilename ParameterType="System.String" Required="true" />
-      <MatchExpression ParameterType="System.String" Required="true" />
-      <ReplacementText ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Reference Include="System.Core" />
-      <Using Namespace="System" />
-      <Using Namespace="System.IO" />
-      <Using Namespace="System.Text.RegularExpressions" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-              File.WriteAllText(
-                  OutputFilename,
-                  Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
-                  );
-            ]]></Code>
-    </Task>
-  </UsingTask>
-  <Target Name="Default" DependsOnTargets="Build">
-    <ReplaceFileText InputFilename="C:\Users\space\Documents\My Games\XCOM2\XComGame\Config\XComEngine.ini" OutputFilename="C:\Users\space\Documents\My Games\XCOM2\XComGame\Config\XComEngine.ini" MatchExpression="Fullscreen=True" ReplacementText="Fullscreen=False" />
-    <ReplaceFileText InputFilename="C:\Users\space\Documents\My Games\XCOM2 War of the Chosen\XComGame\Config\XComEngine.ini" OutputFilename="C:\Users\space\Documents\My Games\XCOM2 War of the Chosen\XComGame\Config\XComEngine.ini" MatchExpression="Fullscreen=True" ReplacementText="Fullscreen=False" />
-  </Target>
 </Project>
