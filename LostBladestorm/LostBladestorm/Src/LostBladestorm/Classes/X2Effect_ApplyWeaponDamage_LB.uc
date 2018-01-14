@@ -45,6 +45,8 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local array<DamageModifierInfo> SpecialDamageMessages;
 	local DamageResult ZeroDamageResult;
 
+	`log("OnEffectAdded",,'LostBladestorm');
+
 	kNewTargetDamageableState = Damageable(kNewTargetState);
 	if( kNewTargetDamageableState != none )
 	{
@@ -55,6 +57,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		if ((iDamage == 0) && (iMitigated == 0) && (NewRupture == 0) && (NewShred == 0))
 		{
 			// No damage is being dealt
+			`log("No damage is being dealt",,'LostBladestorm');
 			if (SpecialDamageMessages.Length > 0 || bFullyImmune != 0)
 			{
 				TargetUnit = XComGameState_Unit(kNewTargetState);
@@ -169,6 +172,8 @@ simulated function ApplyEffectToWorld(const out EffectAppliedData ApplyEffectPar
 	local bool bLinearDamage;
 	local X2AbilityMultiTargetStyle TargetStyle;
 	local GameRulesCache_VisibilityInfo OutVisibilityInfo;
+
+	`log("ApplyEffectToWorld",,'LostBladestorm');
 
 	//If this damage effect has an associated position, it does world damage
 	if( ApplyEffectParameters.AbilityInputContext.TargetLocations.Length > 0 || ApplyEffectParameters.AbilityResultContext.ProjectileHitLocations.Length > 0 )
@@ -342,6 +347,8 @@ simulated function GetDamagePreview(StateObjectReference TargetRef, XComGameStat
 	local array<Name> AppliedDamageTypes;
 	local bool bDoesDamageIgnoreShields;
 	local DamageModifierInfo DamageModInfo;
+
+	`log("GetDamagePreview",,'LostBladestorm');
 
 	MinDamagePreview = UpgradeTemplateBonusDamage;
 	MaxDamagePreview = UpgradeTemplateBonusDamage;
@@ -581,6 +588,8 @@ simulated function ApplyFalloff( out int WeaponDamage, Damageable Target, XComGa
 	local array<TTile> AllTiles;
 	local vector TargetPos;
 
+	`log("ApplyFallOff",,'LostBladestorm');
+
 	if (!IsExplosiveDamage()) // not explosive
 		return;
 
@@ -653,6 +662,8 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 	local DamageModifierInfo ModifierInfo;
 	local bool bWasImmune, bHadAnyDamage;
 
+	`log("CalculateDamageAmount",,'LostBladestorm');
+
 	ArmorMitigation = 0;
 	NewRupture = 0;
 	NewShred = 0;
@@ -689,11 +700,11 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 		}
 	}
 
-	`log("===" $ GetFuncName() $ "===", true, 'XCom_HitRolls');
+	`log("===" $ GetFuncName() $ "===", true, 'LostBladestorm');
 
 	if (kSourceItem != none)
 	{
-		`log("Attacker ID:" @ kSourceUnit.ObjectID @ "With Item ID:" @ kSourceItem.ObjectID @ "Target ID:" @ ApplyEffectParameters.TargetStateObjectRef.ObjectID, true, 'XCom_HitRolls');
+		`log("Attacker ID:" @ kSourceUnit.ObjectID @ "With Item ID:" @ kSourceItem.ObjectID @ "Target ID:" @ ApplyEffectParameters.TargetStateObjectRef.ObjectID, true, 'LostBladestorm');
 		if (!bIgnoreBaseDamage)
 		{
 			kSourceItem.GetBaseWeaponDamageValue(XComGameState_BaseObject(kTarget), BaseDamageValue);
@@ -775,52 +786,52 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 	NewShred = BaseDamageValue.Shred + ExtraDamageValue.Shred + BonusEffectDamageValue.Shred + AmmoDamageValue.Shred + UpgradeDamageValue.Shred;
 	RuptureCap = WeaponDamage;
 
-	`log(`ShowVar(bIgnoreBaseDamage) @ `ShowVar(DamageTag), true, 'XCom_HitRolls');
-	`log("Weapon damage:" @ WeaponDamage @ "Potential spread:" @ DamageSpread, true, 'XCom_HitRolls');
+	`log(`ShowVar(bIgnoreBaseDamage) @ `ShowVar(DamageTag), true, 'LostBladestorm');
+	`log("Weapon damage:" @ WeaponDamage @ "Potential spread:" @ DamageSpread, true, 'LostBladestorm');
 
 	if (DamageSpread > 0)
 	{
 		WeaponDamage += DamageSpread;                          //  set to max damage based on spread
 		WeaponDamage -= `SYNC_RAND(DamageSpread * 2 + 1);      //  multiply spread by 2 to get full range off base damage, add 1 as rand returns 0:x-1, not 0:x
 	}
-	`log("Damage with spread:" @ WeaponDamage, true, 'XCom_HitRolls');
+	`log("Damage with spread:" @ WeaponDamage, true, 'LostBladestorm');
 	if (PlusOneDamage(BaseDamageValue.PlusOne))
 	{
 		WeaponDamage++;
-		`log("Rolled for PlusOne off BaseDamage, succeeded. Damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("Rolled for PlusOne off BaseDamage, succeeded. Damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 	if (PlusOneDamage(ExtraDamageValue.PlusOne))
 	{
 		WeaponDamage++;
-		`log("Rolled for PlusOne off ExtraDamage, succeeded. Damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("Rolled for PlusOne off ExtraDamage, succeeded. Damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 	if (PlusOneDamage(BonusEffectDamageValue.PlusOne))
 	{
 		WeaponDamage++;
-		`log("Rolled for PlusOne off BonusEffectDamage, succeeded. Damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("Rolled for PlusOne off BonusEffectDamage, succeeded. Damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 	if (PlusOneDamage(AmmoDamageValue.PlusOne))
 	{
 		WeaponDamage++;
-		`log("Rolled for PlusOne off AmmoDamage, succeeded. Damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("Rolled for PlusOne off AmmoDamage, succeeded. Damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 
 	if (ApplyEffectParameters.AbilityResultContext.HitResult == eHit_Crit)
 	{
 		WeaponDamage += CritDamage;
-		`log("CRIT! Adjusted damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("CRIT! Adjusted damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 	else if (ApplyEffectParameters.AbilityResultContext.HitResult == eHit_Graze)
 	{
 		WeaponDamage *= GRAZE_DMG_MULT;
-		`log("GRAZE! Adjusted damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("GRAZE! Adjusted damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 
 	RuptureAmount = min(kTarget.GetRupturedValue() + NewRupture, RuptureCap);
 	if (RuptureAmount != 0)
 	{
 		WeaponDamage += RuptureAmount;
-		`log("Target is ruptured, increases damage by" @ RuptureAmount $", new damage:" @ WeaponDamage, true, 'XCom_HitRolls');
+		`log("Target is ruptured, increases damage by" @ RuptureAmount $", new damage:" @ WeaponDamage, true, 'LostBladestorm');
 	}
 
 	if( kSourceUnit != none)
@@ -837,7 +848,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 				if (EffectDmg != 0)
 				{
 					TargetBaseDmgMod += EffectDmg;
-					`log("Defender effect" @ EffectTemplate.EffectName @ "adjusting base damage by" @ EffectDmg, true, 'XCom_HitRolls');
+					`log("Defender effect" @ EffectTemplate.EffectName @ "adjusting base damage by" @ EffectDmg, true, 'LostBladestorm');
 
 					if (EffectTemplate.bDisplayInSpecialDamageMessageUI)
 					{
@@ -851,7 +862,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			if (TargetBaseDmgMod != 0)
 			{
 				WeaponDamage += TargetBaseDmgMod;
-				`log("Total base damage after defender effect mods:" @ WeaponDamage, true, 'XCom_HitRolls');
+				`log("Total base damage after defender effect mods:" @ WeaponDamage, true, 'LostBladestorm');
 			}			
 		}
 
@@ -866,7 +877,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			if (EffectDmg != 0)
 			{
 				WeaponDamage += EffectDmg;
-				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjusting damage by" @ EffectDmg $ ", new damage:" @ WeaponDamage, true, 'XCom_HitRolls');				
+				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjusting damage by" @ EffectDmg $ ", new damage:" @ WeaponDamage, true, 'LostBladestorm');				
 
 				ModifierInfo.Value += EffectDmg;
 			}
@@ -874,7 +885,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			if (EffectDmg != 0)
 			{
 				ArmorPiercing += EffectDmg;
-				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjusting armor piercing by" @ EffectDmg $ ", new pierce:" @ ArmorPiercing, true, 'XCom_HitRolls');				
+				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjusting armor piercing by" @ EffectDmg $ ", new pierce:" @ ArmorPiercing, true, 'LostBladestorm');				
 
 				ModifierInfo.Value += EffectDmg;
 			}
@@ -882,7 +893,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			if (EffectDmg != 0)
 			{
 				NewShred += EffectDmg;
-				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjust new shred value by" @ EffectDmg $ ", new shred:" @ NewShred, true, 'XCom_HitRolls');
+				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjust new shred value by" @ EffectDmg $ ", new shred:" @ NewShred, true, 'LostBladestorm');
 
 				ModifierInfo.Value += EffectDmg;
 			}
@@ -907,7 +918,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			if (EffectDmg != 0)
 			{
 				NewShred += EffectDmg;
-				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjust new shred value by" @ EffectDmg $ ", new shred:" @ NewShred, true, 'XCom_HitRolls');
+				`log("Attacker effect" @ EffectTemplate.EffectName @ "adjust new shred value by" @ EffectDmg $ ", new shred:" @ NewShred, true, 'LostBladestorm');
 
 				ModifierInfo.Value += EffectDmg;
 			}
@@ -932,7 +943,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 				if (EffectDmg != 0)
 				{
 					WeaponDamage += EffectDmg;
-					`log("Defender effect" @ EffectTemplate.EffectName @ "adjusting damage by" @ EffectDmg $ ", new damage:" @ WeaponDamage, true, 'XCom_HitRolls');				
+					`log("Defender effect" @ EffectTemplate.EffectName @ "adjusting damage by" @ EffectDmg $ ", new damage:" @ WeaponDamage, true, 'LostBladestorm');				
 
 					if( EffectTemplate.bDisplayInSpecialDamageMessageUI )
 					{
@@ -952,7 +963,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 			{				
 				OriginalMitigation = ArmorMitigation;
 				ArmorPiercing += kSourceUnit.GetCurrentStat(eStat_ArmorPiercing);				
-				`log("Armor mitigation! Target armor mitigation value:" @ ArmorMitigation @ "Attacker armor piercing value:" @ ArmorPiercing, true, 'XCom_HitRolls');
+				`log("Armor mitigation! Target armor mitigation value:" @ ArmorMitigation @ "Attacker armor piercing value:" @ ArmorPiercing, true, 'LostBladestorm');
 				ArmorMitigation -= ArmorPiercing;				
 				if (ArmorMitigation < 0)
 					ArmorMitigation = 0;
@@ -960,7 +971,7 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 					ArmorMitigation = WeaponDamage - 1;
 				if (ArmorMitigation < 0)    //  WeaponDamage could have been 0
 					ArmorMitigation = 0;    
-				`log("  Final mitigation value:" @ ArmorMitigation, true, 'XCom_HitRolls');
+				`log("  Final mitigation value:" @ ArmorMitigation, true, 'LostBladestorm');
 			}
 		}
 	}
@@ -979,12 +990,12 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 		// Do not allow the damage reduction to invert the damage amount (i.e. heal instead of hurt, or vice-versa).
 		TotalDamage = 0;
 	}
-	`log("Total Damage:" @ TotalDamage, true, 'XCom_HitRolls');
-	`log("Shred from this attack:" @ NewShred, NewShred > 0, 'XCom_HitRolls');
+	`log("Total Damage:" @ TotalDamage, true, 'LostBladestorm');
+	`log("Shred from this attack:" @ NewShred, NewShred > 0, 'LostBladestorm');
 
 	// Set the effect's damage
 	bFullyImmune = (bWasImmune && bHadAnyDamage) ? 1 : 0;
-	`log("FULLY IMMUNE", bFullyImmune == 1, 'XCom_HitRolls');
+	`log("FULLY IMMUNE", bFullyImmune == 1, 'LostBladestorm');
 
 	return TotalDamage;
 }
@@ -994,11 +1005,13 @@ simulated function bool ModifyDamageValue(out WeaponDamageValue DamageValue, Dam
 {
 	local WeaponDamageValue EmptyDamageValue;
 
+	`log("ModifyDamageValue",,'LostBladestorm');
+
 	if( Target != None )
 	{
 		if( Target.IsImmuneToDamage(DamageValue.DamageType) )
 		{
-			`log("Target is immune to damage type" @ DamageValue.DamageType $ "!", true, 'XCom_HitRolls');
+			`log("Target is immune to damage type" @ DamageValue.DamageType $ "!", true, 'LostBladestorm');
 			DamageValue = EmptyDamageValue;
 			return true;
 		}
@@ -1012,11 +1025,13 @@ simulated function bool ModifyDamageValue(out WeaponDamageValue DamageValue, Dam
 
 simulated function bool PlusOneDamage(int Chance)
 {
+	`log("PlusOneDamage",,'LostBladestorm');
 	return `SYNC_RAND(100) < Chance;
 }
 
 simulated function bool IsExplosiveDamage() 
 { 
+	`log("IsExplosiveDamage",,'LostBladestorm');
 	return bExplosiveDamage; 
 }
 
@@ -1041,6 +1056,8 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
 	local int x, OverwatchExclusion;
 	local bool bRemovedEffect;
 	
+	`log("AddX2ActionsForVisualization",,'LostBladestorm');
+
 	History = `XCOMHISTORY;
 	VisMgr = `XCOMVISUALIZATIONMGR;
 	XWorld = `XWORLD;
@@ -1146,6 +1163,8 @@ simulated function AddX2ActionsForVisualization_Tick(XComGameState VisualizeGame
 	local XComGameStateContext_TickEffect TickContext;
 	local XComGameState_Effect TickedEffect;
 
+	`log("AddX2ActionsForVisualization_Tick",,'LostBladestorm');
+
 	if( ActionMetadata.StateObject_NewState.IsA('XComGameState_Unit') )
 	{
 		//  cosmetic units should not take damage
@@ -1198,6 +1217,8 @@ function GetEffectDamageTypes(XComGameState GameState, EffectAppliedData EffectD
 
 	super.GetEffectDamageTypes(GameState, EffectData, EffectDamageTypes);
 
+	`log("GetEffectDamageTypes",,'LostBladestorm');
+
 	History = `XCOMHISTORY;
 
 	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(EffectData.AbilityStateObjectRef.ObjectID));
@@ -1240,6 +1261,8 @@ function CalculateDamageValues(XComGameState_Item SourceWeapon, XComGameState_Un
 	local X2WeaponUpgradeTemplate WeaponUpgradeTemplate;
 	local X2AmmoTemplate AmmoTemplate;
 	
+	`log("CalculateDamageValue",,'LostBladestorm');
+
 	if (SourceWeapon != None)
 	{
 		if (!bIgnoreBaseDamage)
