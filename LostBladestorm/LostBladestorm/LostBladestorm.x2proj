@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>306647de-f3c8-4a42-a2d9-1b4640d82dd5</Guid>
+    <Name>LostBladestorm</Name>
+    <Description>LostBladestorm</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>LostBladestorm</AssemblyName>
+    <RootNamespace>LostBladestorm</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config\XComEditor.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEngine.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="README.txt" />
+    <Content Include="Src\LostBladestorm\Classes\X2Ability_LostBladestormAttack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LostBladestorm\Classes\X2Condition_LostBladestormRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LostBladestorm\Classes\X2DownloadableContentInfo_LostBladestorm.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LostBladestorm\Classes\X2Effect_ApplyWeaponDamage_LB.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config" />
+    <Folder Include="Content" />
+    <Folder Include="Localization" />
+    <Folder Include="Src" />
+    <Folder Include="Script" />
+    <Folder Include="Src\LostBladestorm" />
+    <Folder Include="Src\LostBladestorm\Classes" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>
