@@ -49,6 +49,8 @@ simulated function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
     self.CONFIG_VERSION = `MCM_CH_GetCompositeVersion();
     self.SaveConfig();
+	/* on save update the template. makes the new setting take effect without a restart */
+	class'X2Ability_LostBladestormAttack'.static.UpdateLostBladestormWithSetting(self.TRIGGER_ON_ATTACK);
 }
 
 defaultproperties
