@@ -8,5 +8,9 @@ Balance
 
 Known bugs
 
-- There's something wrong with animations, especially when Lost react to certain attacks. For example, in the first video the Sharpshooter uses her pistol, which triggers a reaction, but the animation is the rifle attack. I think this is just a cosmetic bug and the game logic is not affected (note that in the example the rifle shot did not use any ammo)
-- The Lost will not react to any other unit that has Bladestorm. This means if a Ranger with Bladestorm walks past a Lost, they are immune to the Lost's Bladestorm. This is an intentional hack to avoid the game getting into a glitched state I observed while testing when actions and reactions pile up. If anyone is knowledgeable about this code and wants to help fix it, please get in touch!
+- There's no alert indicating that a given attack was triggered by Bladestorm, unlike the Ranger's normal Bladestorm
+- There's something wrong with animations. For example, in the first video the Sharpshooter uses her pistol, which triggers a reaction, but the animation when she resumes is a rifle shot. I think this is just a cosmetic bug and the game logic is not affected (note that in the example the rifle shot did not use any ammo)
+- The Lost will not react to any other unit that has Bladestorm. This means if a Ranger with Bladestorm walks past a Lost, they are immune to the Lost's Bladestorm. This is an intentional hack to avoid the game getting into a glitched state I observed while testing when actions and reactions pile up.
+- Probably more. Please let me know if you encounter any, but in the meantime don't play with this mod enabled on your favorite Ironman campaign.
+
+If anyone is knowledgeable about the Bladestorm code or the related systems and wants to help fix it, please get in touch!
