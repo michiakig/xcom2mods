@@ -1,6 +1,6 @@
 class X2DownloadableContentInfo_LostBladestorm extends X2DownloadableContentInfo;
 
-/* Adds the ability LostBladestormAttack to all weapons with the ability LostAttack */
+/* Adds the ability LostBladestorm to all weapons with the ability LostAttack */
 static event OnPostTemplatesCreated()
 {
 	local X2ItemTemplateManager ItemManager;
@@ -14,7 +14,7 @@ static event OnPostTemplatesCreated()
 		if (WeaponTemplate.Abilities.Find('LostAttack') != INDEX_NONE)
 		{
 //			`log("Adding LostBladestormAttack to " $ WeaponTemplate.DataName,,'LostBladestorm');
-			WeaponTemplate.Abilities.AddItem('LostBladestormAttack');
+			WeaponTemplate.Abilities.AddItem('LostBladestorm');
 		}
 	}
 }

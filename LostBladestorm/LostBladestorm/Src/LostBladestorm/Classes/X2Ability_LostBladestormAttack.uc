@@ -4,7 +4,16 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 	Templates.AddItem(CreateLostBladestormAttack());
+	Templates.AddItem(CreateLostBladestorm());
 	return Templates;
+}
+
+static function X2AbilityTemplate CreateLostBladestorm()
+{
+	local X2AbilityTemplate Template;
+	Template = PurePassive('LostBladestorm', "img:///UILibrary_PerkIcons.UIPerk_bladestorm", false, 'eAbilitySource_Perk');
+	Template.AdditionalAbilities.AddItem('LostBladestormAttack');
+	return Template;
 }
 
 static function X2DataTemplate CreateLostBladestormAttack()
