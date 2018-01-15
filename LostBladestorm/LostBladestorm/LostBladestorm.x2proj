@@ -30,11 +30,20 @@ Known bugs
     <Content Include="Config\XComEngine.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComLostBladestorm_Defaults.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\XComGame.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="README.txt" />
     <Content Include="ModPreview.jpg" />
+    <Content Include="Src\LostBladestorm\Classes\LostBladestormMCMListener.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LostBladestorm\Classes\LostBladestorm_Defaults.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LostBladestorm\Classes\X2Ability_LostBladestormAttack.uc">
       <SubType>Content</SubType>
     </Content>
@@ -47,6 +56,45 @@ Known bugs
     <Content Include="Src\LostBladestorm\Classes\X2DownloadableContentInfo_LostBladestorm.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Button.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Checkbox.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Dropdown.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Instance.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Label.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Setting.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsGroup.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsPage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Slider.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Spinner.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\MCM_API_CfgHelpers.uci">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config" />
@@ -56,6 +104,8 @@ Known bugs
     <Folder Include="Script" />
     <Folder Include="Src\LostBladestorm" />
     <Folder Include="Src\LostBladestorm\Classes" />
+    <Folder Include="Src\ModConfigMenuAPI" />
+    <Folder Include="Src\ModConfigMenuAPI\Classes" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
 </Project>
