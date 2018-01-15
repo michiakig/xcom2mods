@@ -21,12 +21,34 @@ static function X2DataTemplate CreateLostBladestormAttack()
 	local X2AbilityTemplate Template;
 	local X2Condition_LostBladestormRange RangeCondition;
 	local X2Condition_UnitDoesNotHaveBladestorm ExcludeOtherBladestormCondition;
+	local X2AbilityTrigger AbilityTrigger;
+	local X2AbilityTrigger_EventListener EventListener;
+	local int index;
+	local bool found;
 	Template = class'X2Ability_RangerAbilitySet'.static.BladestormAttack('LostBladestormAttack');
 
 	/* necessary to limit range to 1 tile */
 	RangeCondition = new class'X2Condition_LostBladestormRange';
 	Template.AbilityTargetConditions.AddItem(RangeCondition);
 
+	/* find and remove trigger on attack */
+	found = false;
+	for (index = 0; index < Template.AbilityTriggers.Length; ++index)
+	{
+		AbilityTrigger = Template.AbilityTriggers[index];
+		EventListener = X2AbilityTrigger_EventListener(AbilityTrigger);
+		if (EventListener != none && EventListener.ListenerData.EventID == 'AbilityActivated')
+		{
+			found = true;
+			break;
+		}
+	}
+	if (found)
+	{
+		Template.AbilityTriggers.Remove(index, 1);
+	}
+
+	/* values from Lost melee attack */
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_escape";
 	Template.Hostility = eHostility_Offensive;
 //	Template.AbilitySourceName = 'eAbilitySource_Standard';
