@@ -11,6 +11,7 @@ static function X2DataTemplate CreateLostBladestormAttack()
 {
 	local X2AbilityTemplate Template;
 	local X2Condition_LostBladestormRange RangeCondition;
+	local X2Condition_UnitDoesNotHaveBladestorm ExcludeOtherBladestormCondition;
 	Template = class'X2Ability_RangerAbilitySet'.static.BladestormAttack('LostBladestormAttack');
 
 	/* necessary to limit range to 1 tile */
@@ -25,6 +26,10 @@ static function X2DataTemplate CreateLostBladestormAttack()
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
 	Template.CustomFireAnim = 'FF_Melee';
 	Template.CinescriptCameraType = "Lost_Attack";
+
+	/* do not trigger for units with bladestorm, gets game in a bugged state */
+	ExcludeOtherBladestormCondition = new class'X2Condition_UnitDoesNotHaveBladestorm';
+	Template.AbilityTargetConditions.AddItem(ExcludeOtherBladestormCondition);
 
 	return Template;
 }

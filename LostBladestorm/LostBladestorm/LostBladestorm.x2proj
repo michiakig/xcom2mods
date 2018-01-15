@@ -35,6 +35,9 @@ Known bugs
     <Content Include="Src\LostBladestorm\Classes\X2Condition_LostBladestormRange.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LostBladestorm\Classes\X2Condition_UnitDoesNotHaveBladestorm.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LostBladestorm\Classes\X2DownloadableContentInfo_LostBladestorm.uc">
       <SubType>Content</SubType>
     </Content>
