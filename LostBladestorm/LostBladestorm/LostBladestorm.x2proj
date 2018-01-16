@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Guid>306647de-f3c8-4a42-a2d9-1b4640d82dd5</Guid>
@@ -38,7 +38,7 @@ Known bugs
     </Content>
     <Content Include="README.txt" />
     <Content Include="ModPreview.jpg" />
-    <Content Include="Src\LostBladestorm\Classes\LostBladestormMCMListener.uc">
+    <Content Include="Src\LostBladestorm\Classes\LostBladestormSettings.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LostBladestorm\Classes\LostBladestorm_Defaults.uc">

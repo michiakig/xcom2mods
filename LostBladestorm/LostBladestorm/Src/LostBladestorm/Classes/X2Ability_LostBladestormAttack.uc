@@ -1,15 +1,15 @@
 class X2Ability_LostBladestormAttack extends X2Ability;
 
 /* manually expanding an MCM macro so it can be static */
-static function bool GetTriggerOnAttackSetting()
+static function bool ShouldTriggerOnAttack()
 {
-	if (class'LostBladestorm_Defaults'.default.VERSION > class'LostBladestormMCMListener'.default.CONFIG_VERSION)
+	if (class'LostBladestorm_Defaults'.default.VERSION > class'LostBladestormSettings'.default.CONFIG_VERSION)
 	{
 		return class'LostBladestorm_Defaults'.default.TRIGGER_ON_ATTACK;
 	}
 	else
 	{
-		return class'LostBladestormMCMListener'.default.TRIGGER_ON_ATTACK;
+		return class'LostBladestormSettings'.default.TRIGGER_ON_ATTACK;
 	}
 }
 
@@ -36,11 +36,8 @@ static function X2DataTemplate CreateLostBladestormAttack()
 	local X2Condition_UnitDoesNotHaveBladestorm ExcludeOtherBladestormCondition;
 	Template = class'X2Ability_RangerAbilitySet'.static.BladestormAttack('LostBladestormAttack');
 
-	/* disable trigger on attack if it's been disabled */
-	if (!GetTriggerOnAttackSetting())
-	{
-		RemoveAbilityActivatedTrigger(Template);
-	}
+	/* attach a conditional listener to make trigger on attack configurable */
+	SetConditionalAttackListener(Template);
 
 	/* necessary to limit range to 1 tile */
 	RangeCondition = new class'X2Condition_LostBladestormRange';
@@ -63,60 +60,42 @@ static function X2DataTemplate CreateLostBladestormAttack()
 	return Template;
 }
 
-static function UpdateLostBladestormWithSetting(bool bTriggerOnAttack)
+static function SetConditionalAttackListener(X2AbilityTemplate Template)
 {
-	local X2AbilityTemplate Template;
-	local X2AbilityTemplateManager AbilityManager;
-
-	AbilityManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
-	Template = AbilityManager.FindAbilityTemplate('LostBladestormAttack');
-
-	if (Template != none)
-	{
-		// always remove, then if it's enabled, add it back in.
-		RemoveAbilityActivatedTrigger(Template);
-		if (bTriggerOnAttack)
-		{
-			AddAbilityActivatedTrigger(Template);
-		}
-	}
-}
-
-static function AddAbilityActivatedTrigger(X2AbilityTemplate Template)
-{
-	local X2AbilityTrigger_EventListener Trigger;
-//	`log("Adding ability activated trigger",,'LostBladestorm');
-
-	/* from ranger bladestorm code: */
-	Trigger = new class'X2AbilityTrigger_EventListener';
-	Trigger.ListenerData.EventID = 'AbilityActivated';
-	Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
-	Trigger.ListenerData.Filter = eFilter_None;
-	Trigger.ListenerData.EventFn = class'XComGameState_Ability'.static.TypicalAttackListener;
-	Template.AbilityTriggers.AddItem(Trigger);
-}
-
-static function RemoveAbilityActivatedTrigger(X2AbilityTemplate Template)
-{
-	local X2AbilityTrigger AbilityTrigger;
+	local X2AbilityTrigger Trigger;
 	local X2AbilityTrigger_EventListener EventListener;
-	local int index;
-	local bool found;
 
-//	`log("Removing ability activated trigger",,'LostBladestorm');
-	found = false;
-	for (index = 0; index < Template.AbilityTriggers.Length; ++index)
+	foreach Template.AbilityTriggers(Trigger)
 	{
-		AbilityTrigger = Template.AbilityTriggers[index];
-		EventListener = X2AbilityTrigger_EventListener(AbilityTrigger);
+		EventListener = X2AbilityTrigger_EventListener(Trigger);
 		if (EventListener != none && EventListener.ListenerData.EventID == 'AbilityActivated')
 		{
-			found = true;
-			break;
+			EventListener.ListenerData.EventFn = ConditionalAttackListener;
 		}
 	}
-	if (found)
+}
+
+static function EventListenerReturn ConditionalAttackListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
+{
+	local XComGameState_Unit TargetUnit;
+	local XComGameStateContext_Ability AbilityContext;
+	local X2AbilityTemplate AbilityTemplate;
+	local XComGameState_Ability Ability;
+
+	AbilityContext = XComGameStateContext_Ability(GameState.GetContext());
+	if (AbilityContext != none)
 	{
-		Template.AbilityTriggers.Remove(index, 1);
-	}
+		TargetUnit = XComGameState_Unit(EventSource);
+		AbilityTemplate = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager().FindAbilityTemplate(AbilityContext.InputContext.AbilityTemplateName);
+		Ability = XComGameState_Ability(CallbackData);
+		if (Ability != none && AbilityTemplate != none && AbilityTemplate.Hostility == eHostility_Offensive && (Ability.CanActivateAbilityForObserverEvent( TargetUnit ) == 'AA_Success'))
+		{
+			if (ShouldTriggerOnAttack())
+			{
+				Ability.AbilityTriggerAgainstSingleTarget(TargetUnit.GetReference(), false);
+			}
+		}
+	}	
+
+	return ELR_NoInterrupt;
 }
