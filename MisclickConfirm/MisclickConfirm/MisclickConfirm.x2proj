@@ -16,14 +16,13 @@
     <Content Include="Localization\MisclickConfirm.int" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
-    <Content Include="Config\XComTacticalInput_MC.ini">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="ModPreview.jpg" />
     <Content Include="README.Vanilla.txt">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\MisclickConfirm\Classes\XComTacticalInput_MC.uc" />
+    <Content Include="Src\MisclickConfirm\Classes\XComTacticalController_MC.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="README.WOTC.txt">
       <SubType>Content</SubType>
     </Content>
