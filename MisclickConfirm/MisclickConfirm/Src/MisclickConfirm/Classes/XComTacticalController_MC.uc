@@ -74,11 +74,19 @@ private function ShowMisclickConfirmPopup()
 	presentationLayer.UIRaiseDialog(dialog);
 }
 
+private function bool ShouldShowPopup(XGUnit Unit, XComPathingPawn PathingPawn)
+{
+	return	Unit.CanUseCover() &&
+			AnyVisibleEnemiesNotLost(m_kPathingPawn) &&
+			!DoesPathEndInCover(m_kPathingPawn) &&
+			!DoesPathEndInEvacZone(m_kPathingPawn);
+}
+
 simulated function bool PerformPath(XGUnit kUnit, optional bool bUserCreated=false)
 {
 	local TTile PathTile;
 
-	if (AnyVisibleEnemiesNotLost(m_kPathingPawn) && !DoesPathEndInCover(m_kPathingPawn) && !DoesPathEndInEvacZone(m_kPathingPawn))
+	if (ShouldShowPopup(kUnit, m_kPathingPawn))
 	{
 		// Save the path before showing the pop up
 		SavedPathTiles.Length = 0;
