@@ -2,12 +2,12 @@ class XComTacticalController_MC extends XComTacticalController;
 
 var array<TTile> SavedPathTiles;
 
-private function bool AnyVisibleEnemiesNotLost(XComPathingPawn PathingPawn)
+private function bool AnyVisibleEnemies(XComPathingPawn PathingPawn)
 {
 	local array<StateObjectReference> VisibleEnemies;
 	local StateObjectReference EnemyRef;
-	local XComGameState_Unit EnemyState;
-	local XComGameState_Unit ActiveUnitState;
+	local XComGameState_Unit  ActiveUnitState;
+	local X2CharacterTemplate Template;
 
 	ActiveUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(GetActiveUnit().ObjectID));
 	class'X2TacticalVisibilityHelpers'.static.GetAllVisibleEnemyTargetsForUnit(ActiveUnitState.ObjectID, VisibleEnemies);
@@ -18,14 +18,14 @@ private function bool AnyVisibleEnemiesNotLost(XComPathingPawn PathingPawn)
 	}
 
 	foreach VisibleEnemies(EnemyRef) {
-		EnemyState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EnemyRef.ObjectID));
-		if (EnemyState.GetMyTemplate().CharacterGroupName != 'TheLost')
+		Template = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EnemyRef.ObjectID)).GetMyTemplate();
+		if (!Template.bIsMeleeOnly)
 		{
-			// Found a visible enemy that is not a Lost
+			// Found a visible ranged enemy
 			return true;
 		}
 	}
-	// No visible enemies or only Lost
+	// No visible ranged enemies
 	return false;
 }
 
@@ -77,7 +77,7 @@ private function ShowMisclickConfirmPopup()
 private function bool ShouldShowPopup(XGUnit Unit, XComPathingPawn PathingPawn)
 {
 	return	Unit.CanUseCover() &&
-			AnyVisibleEnemiesNotLost(m_kPathingPawn) &&
+			AnyVisibleEnemies(m_kPathingPawn) &&
 			!DoesPathEndInCover(m_kPathingPawn) &&
 			!DoesPathEndInEvacZone(m_kPathingPawn);
 }
