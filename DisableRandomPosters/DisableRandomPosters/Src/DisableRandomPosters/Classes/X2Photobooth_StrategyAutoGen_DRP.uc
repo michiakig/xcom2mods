@@ -13,6 +13,10 @@ function bool ShouldCreateBondPoster()
     return `MCM_CH_GetValue(class'DisableRandomPosters_Defaults'.default.BONDED,class'DisableRandomPostersSettings'.default.BONDED);
 }
 
+function bool ShouldCreatePromotionPoster()
+{
+	return  `MCM_CH_GetValue(class'DisableRandomPosters_Defaults'.default.PROMOTED,class'DisableRandomPostersSettings'.default.PROMOTED);
+}
 
 function TakePhoto()
 {
@@ -82,14 +86,12 @@ function TakePhoto()
 			CheckConfigAndHandle(ShouldCreateMemorialPoster(), ExecutingAutoGenRequest.UnitRef);
 			break;
 		case ePBTLS_PromotedSoldier:
-			CheckConfigAndHandle(class'DisableRandomPosters_Defaults'.default.PROMOTED, ExecutingAutoGenRequest.UnitRef);
+			CheckConfigAndHandle(ShouldCreatePromotionPoster(), ExecutingAutoGenRequest.UnitRef);
 			break;
 		case ePBTLS_BondedSoldier:
 			CheckConfigAndHandle(ShouldCreateBondPoster(), ExecutingAutoGenRequest.UnitRef);
 			break;
 		case ePBTLS_CapturedSoldier:
-			CheckConfigAndHandle(class'DisableRandomPosters_Defaults'.default.CAPTURED, ExecutingAutoGenRequest.UnitRef);
-			break;
 		case ePBTLS_HeadShot:
 			`log("Auto-generating poster, Type=" $ AutoGenSettings.TextLayoutState $", UnitRef=" $ ExecutingAutoGenRequest.UnitRef.ObjectID $ ", FullName=" $ TryGetFullName(ExecutingAutoGenRequest.UnitRef),,'DisableRandomPosters');
 			`PHOTOBOOTH.SetAutoGenSettings(AutoGenSettings, PhotoTaken);
