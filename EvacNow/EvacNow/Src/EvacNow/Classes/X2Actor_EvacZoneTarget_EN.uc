@@ -1,28 +1,39 @@
-class X2Actor_EvacZoneTarget_EN extends X2Actor_EvacZoneTarget;
+//---------------------------------------------------------------------------------------
+//  *********   FIRAXIS SOURCE CODE   ******************
+//  FILE:    X2Actor_EvacZoneTarget.uc
+//  AUTHOR:  David Burchanowski
+//  PURPOSE: Targeting visuals for the X2TargetingMethod_EvacZone targeting method
+//---------------------------------------------------------------------------------------
+//  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
+//--------------------------------------------------------------------------------------- 
 
-var protected string UnsafeMeshPath;
-var private StaticMesh UnsafeMesh;
+class X2Actor_EvacZoneTarget extends StaticMeshActor 
+	config(GameCore);
+
+var const config string MeshPath, BadMeshPath;
+
+var private StaticMesh ZoneMesh, BadMesh;
 
 simulated event PostBeginPlay()
 {
-	local Object object;
 	super.PostBeginPlay();
 
-	`log("UnsafeMeshPath=" $ default.UnsafeMeshPath,,'EvacNow');	
-	object = `CONTENT.RequestGameArchetype(default.UnsafeMeshPath);
-	`log("object="$object,,'EvacNow');
-	UnsafeMesh = StaticMesh(object);
-	`log("UnsafeMesh="$UnsafeMesh,,'EvacNow');
+	ZoneMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.MeshPath));
+	`assert(ZoneMesh != none);	
+	BadMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.BadMeshPath));
+	`assert(BadMesh != none);
 }
 
 simulated function ShowBadMesh()
 {
-	`log("ShowBadMesh()",,'EvacNow');
+	if (StaticMeshComponent.StaticMesh != BadMesh)
+		StaticMeshComponent.SetStaticMesh(BadMesh);
+}
 
-	if (StaticMeshComponent.StaticMesh != UnsafeMesh) {
-		`log("ShowBadMesh(): StaticMeshComponent.StaticMesh != UnsafeMesh",,'EvacNow');
-		StaticMeshComponent.SetStaticMesh(UnsafeMesh);
-	}
+simulated function ShowGoodMesh()
+{
+	if (StaticMeshComponent.StaticMesh != ZoneMesh)
+		StaticMeshComponent.SetStaticMesh(ZoneMesh);
 }
 
 DefaultProperties
@@ -41,5 +52,4 @@ DefaultProperties
 	bStatic=FALSE
 	bWorldGeometry=FALSE
 	bMovable=TRUE
-	UnsafeMeshPath = "UI_3D_EvacNow.Evacuation.EvacLocation_Unsafe"
 }
