@@ -7,12 +7,11 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
 
-class X2Actor_EvacZoneTarget extends StaticMeshActor 
-	config(GameCore);
+class X2Actor_EvacZoneTarget_EN extends StaticMeshActor;
 
-var const config string MeshPath, BadMeshPath;
+var const string MeshPath, BadMeshPath, UnsafeMeshPath;
 
-var private StaticMesh ZoneMesh, BadMesh;
+var private StaticMesh ZoneMesh, BadMesh, UnsafeMesh;
 
 simulated event PostBeginPlay()
 {
@@ -22,6 +21,9 @@ simulated event PostBeginPlay()
 	`assert(ZoneMesh != none);	
 	BadMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.BadMeshPath));
 	`assert(BadMesh != none);
+
+	UnsafeMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.UnsafeMeshPath));
+	`assert(UnsafeMesh != none);
 }
 
 simulated function ShowBadMesh()
@@ -34,6 +36,12 @@ simulated function ShowGoodMesh()
 {
 	if (StaticMeshComponent.StaticMesh != ZoneMesh)
 		StaticMeshComponent.SetStaticMesh(ZoneMesh);
+}
+
+simulated function ShowUnsafeMesh()
+{
+	if (StaticMeshComponent.StaticMesh != UnsafeMesh)
+		StaticMeshComponent.SetStaticMesh(UnsafeMesh);
 }
 
 DefaultProperties
@@ -52,4 +60,7 @@ DefaultProperties
 	bStatic=FALSE
 	bWorldGeometry=FALSE
 	bMovable=TRUE
+	UnsafeMeshPath = "UI_3D_EvacNow.Evacuation.EvacLocation_Unsafe"
+	MeshPath = "UI_3D.Evacuation.EvacLocation"
+	BadMeshPath = "UI_3D.Evacuation.EvacLocation_Obstructed"
 }

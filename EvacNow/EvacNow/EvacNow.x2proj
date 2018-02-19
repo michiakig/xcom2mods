@@ -8,6 +8,9 @@
     <AssemblyName>EvacNow</AssemblyName>
     <RootNamespace>EvacNow</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="Config\XComEditor.ini">
       <SubType>Content</SubType>
@@ -19,13 +22,16 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
-    <Content Include="Src\EvacNow\Classes\X2Actor_EvacZoneTarget_EN.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Content\UI_3D_EvacNow.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\EvacNow\Classes\X2DownloadableContentInfo_EvacNow.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EvacNow\Classes\X2TargetingMethod_EvacZone_EN.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EvacNow\Classes\X2Actor_EvacZoneTarget_EN.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

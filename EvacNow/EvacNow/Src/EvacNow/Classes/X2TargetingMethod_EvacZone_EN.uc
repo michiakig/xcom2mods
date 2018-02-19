@@ -8,12 +8,12 @@
 //--------------------------------------------------------------------------------------- 
 
 /* Re-implemented instead of a class override because fields are private and ValidateEvacArea is static */
-class X2TargetingMethod_EvacZone_EN extends X2TargetingMethod native(Core) config(GameCore);
+class X2TargetingMethod_EvacZone_EN extends X2TargetingMethod config(GameCore);
 
 var config float NeededValidTileCoverage;
 
 var private XCom3DCursor Cursor;
-var private X2Actor_EvacZoneTarget EvacZoneTarget;
+var private X2Actor_EvacZoneTarget_EN EvacZoneTarget;
 var private bool bRestrictToSquadsightRange;
 var private XComGameState_Player AssociatedPlayerState;
 var private bool EnoughTilesValid;
@@ -44,7 +44,7 @@ function Init(AvailableAction InAction)
 		bRestrictToSquadsightRange = CursorTarget.bRestrictToSquadsightRange;
 
 	// setup the evac mesh
-	EvacZoneTarget = `BATTLE.Spawn(class'X2Actor_EvacZoneTarget');
+	EvacZoneTarget = `BATTLE.Spawn(class'X2Actor_EvacZoneTarget_EN');
 	EvacZoneTarget.ShowBadMesh();       //  show as bad until we verify a good location
 	EnoughTilesValid = false;
 }
@@ -85,7 +85,14 @@ function Update(float DeltaTime)
 		EnoughTilesValid = ValidateEvacArea( CursorTile, true );
 		if (EnoughTilesValid)
 		{
-			EvacZoneTarget.ShowGoodMesh( );
+			if (CanEveryoneReachEvacArea(CursorTile))
+			{
+				EvacZoneTarget.ShowGoodMesh( );
+			}
+			else
+			{
+				EvacZoneTarget.ShowUnsafeMesh( );
+			}
 		}
 		else
 		{
@@ -94,7 +101,66 @@ function Update(float DeltaTime)
 	}
 }
 
-static native function bool ValidateEvacTile(const out TTile EvacLoc, out int IsOnFloor);
+/* Check all units can reach the evac zone */
+function bool CanEveryoneReachEvacArea(TTile CursorTile)
+{
+	local XComGameStateHistory History;
+	local XComGameState_HeadquartersXCom XComHQ;
+	local StateObjectReference SquadRef;
+	local XComGameState_Unit XComUnitState;
+	local XGUnit Unit;
+
+	History = `XCOMHISTORY;
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+
+	foreach XComHQ.Squad(SquadRef)
+	{
+		`log("XComHQ.Squad",,'EvacNow');
+		XComUnitState = XComGameState_Unit(History.GetGameStateForObjectID(SquadRef.ObjectID));
+
+		if( !XComUnitState.bRemovedFromPlay )
+		{
+			Unit = XGUnit(XComUnitState.GetVisualizer());
+			if (Unit == None)
+			{
+				`log("!! Got None from GetVisualizer() for " $ XComUnitState.GetFullName(),,'EvacNow');
+				continue;
+			}
+			if (!CanUnitReachEvacArea(Unit, CursorTile))
+			{
+				`log(XComUnitState.GetFullName() $ ", cannot reach evac area.",,'EvacNow');
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/* Check each tile in the evac zone to see if this unit can reach it */
+function bool CanUnitReachEvacArea(XGUnit Unit, TTile EvacCenterLoc)
+{
+	local TTile EvacMin, EvacMax, TestTile;
+
+	class'XComGameState_EvacZone'.static.GetEvacMinMax2D( EvacCenterLoc, EvacMin, EvacMax );
+
+	TestTile = EvacMin;
+	while (TestTile.X <= EvacMax.X)
+	{
+		while (TestTile.Y <= EvacMax.Y)
+		{
+			if (Unit.m_kReachableTilesCache.IsTileReachable(TestTile))
+			{
+				return true;
+			}
+			TestTile.Y++;
+		}
+		TestTile.Y = EvacMin.Y;
+		TestTile.X++;
+	}
+
+	return false;
+}
 
 static function bool ValidateEvacArea( const out TTile EvacCenterLoc, bool IncludeSoldiers )
 {
@@ -116,7 +182,7 @@ static function bool ValidateEvacArea( const out TTile EvacCenterLoc, bool Inclu
 	{
 		while (TestTile.Y <= EvacMax.Y)
 		{
-			if (ValidateEvacTile( TestTile, IsOnFloor ))
+			if (class'X2TargetingMethod_EvacZone'.static.ValidateEvacTile( TestTile, IsOnFloor ))
 			{
 				NumValidTiles++;
 			}
