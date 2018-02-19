@@ -1,66 +1,94 @@
-//---------------------------------------------------------------------------------------
-//  *********   FIRAXIS SOURCE CODE   ******************
-//  FILE:    X2Actor_EvacZoneTarget.uc
-//  AUTHOR:  David Burchanowski
-//  PURPOSE: Targeting visuals for the X2TargetingMethod_EvacZone targeting method
-//---------------------------------------------------------------------------------------
-//  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
-//--------------------------------------------------------------------------------------- 
+class X2Actor_EvacZoneTarget_EN extends X2Actor_EvacZoneTarget;
 
-class X2Actor_EvacZoneTarget_EN extends StaticMeshActor;
-
-var const string MeshPath, BadMeshPath, UnsafeMeshPath;
-
-var private StaticMesh ZoneMesh, BadMesh, UnsafeMesh;
+var const string UnsafeMeshPath;
+var private StaticMesh UnsafeMesh;
 
 simulated event PostBeginPlay()
 {
 	super.PostBeginPlay();
 
-	ZoneMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.MeshPath));
-	`assert(ZoneMesh != none);	
-	BadMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.BadMeshPath));
-	`assert(BadMesh != none);
-
 	UnsafeMesh = StaticMesh(`CONTENT.RequestGameArchetype(default.UnsafeMeshPath));
 	`assert(UnsafeMesh != none);
 }
 
-simulated function ShowBadMesh()
-{
-	if (StaticMeshComponent.StaticMesh != BadMesh)
-		StaticMeshComponent.SetStaticMesh(BadMesh);
-}
-
 simulated function ShowGoodMesh()
 {
-	if (StaticMeshComponent.StaticMesh != ZoneMesh)
-		StaticMeshComponent.SetStaticMesh(ZoneMesh);
+	if (CanEveryoneReachEvacArea())
+	{
+		super.ShowGoodMesh();
+	}
+	else if (StaticMeshComponent.StaticMesh != UnsafeMesh)
+	{
+		StaticMeshComponent.SetStaticMesh(UnsafeMesh);
+	}
 }
 
-simulated function ShowUnsafeMesh()
+/* Returns true if all units can reach the evac zone this turn */
+function bool CanEveryoneReachEvacArea()
 {
-	if (StaticMeshComponent.StaticMesh != UnsafeMesh)
-		StaticMeshComponent.SetStaticMesh(UnsafeMesh);
+	local XComGameStateHistory History;
+	local XComGameState_HeadquartersXCom XComHQ;
+	local StateObjectReference SquadRef;
+	local XComGameState_Unit XComUnitState;
+	local XGUnit Unit;
+
+	local XComWorldData WorldData;
+	local XCom3DCursor Cursor;
+	local vector TargetLocation;
+	local TTile CursorTile;
+
+	WorldData = `XWORLD;
+	Cursor = `Cursor;
+	TargetLocation = Cursor.GetCursorFeetLocation();
+	WorldData.GetFloorTileForPosition(TargetLocation, CursorTile);
+
+	History = `XCOMHISTORY;
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+
+	foreach XComHQ.Squad(SquadRef)
+	{
+		XComUnitState = XComGameState_Unit(History.GetGameStateForObjectID(SquadRef.ObjectID));
+
+		if( !XComUnitState.bRemovedFromPlay )
+		{
+			Unit = XGUnit(XComUnitState.GetVisualizer());
+			if (Unit != None && !CanUnitReachEvacArea(Unit, CursorTile))
+			{
+				`log(XComUnitState.GetFullName() $ ", cannot reach evac area.",,'EvacNow');
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/* Returns true if the unit can reach at least one tile in the evac zone */
+function bool CanUnitReachEvacArea(XGUnit Unit, TTile EvacCenterLoc)
+{
+	local TTile EvacMin, EvacMax, TestTile;
+
+	class'XComGameState_EvacZone'.static.GetEvacMinMax2D( EvacCenterLoc, EvacMin, EvacMax );
+
+	TestTile = EvacMin;
+	while (TestTile.X <= EvacMax.X)
+	{
+		while (TestTile.Y <= EvacMax.Y)
+		{
+			if (Unit.m_kReachableTilesCache.IsTileReachable(TestTile))
+			{
+				return true;
+			}
+			TestTile.Y++;
+		}
+		TestTile.Y = EvacMin.Y;
+		TestTile.X++;
+	}
+
+	return false;
 }
 
 DefaultProperties
 {
-	Begin Object Name=StaticMeshComponent0
-		bOwnerNoSee=FALSE
-		CastShadow=FALSE
-		CollideActors=FALSE
-		BlockActors=FALSE
-		BlockZeroExtent=FALSE
-		BlockNonZeroExtent=FALSE
-		BlockRigidBody=FALSE
-		HiddenGame=FALSE
-	End Object	
-
-	bStatic=FALSE
-	bWorldGeometry=FALSE
-	bMovable=TRUE
 	UnsafeMeshPath = "UI_3D_EvacNow.Evacuation.EvacLocation_Unsafe"
-	MeshPath = "UI_3D.Evacuation.EvacLocation"
-	BadMeshPath = "UI_3D.Evacuation.EvacLocation_Obstructed"
 }
