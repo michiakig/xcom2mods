@@ -54,7 +54,6 @@ function bool CanEveryoneReachEvacArea()
 			Unit = XGUnit(XComUnitState.GetVisualizer());
 			if (Unit != None && !CanUnitReachEvacArea(Unit, CursorTile))
 			{
-				`log(XComUnitState.GetFullName() $ ", cannot reach evac area.",,'EvacNow');
 				return false;
 			}
 		}
