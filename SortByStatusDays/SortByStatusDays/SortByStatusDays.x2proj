@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>681f4a22-06b2-415c-bad9-c828af26945f</Guid>
+    <Name>SortByStatusDays</Name>
+    <Description>SortByStatusDays</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>SortByStatusDays</AssemblyName>
+    <RootNamespace>SortByStatusDays</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\SortByStatusDays\" />
+    <Folder Include="Src\SortByStatusDays\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\SortByStatusDays\Classes\UIPersonnel_SortByStatusDays.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SortByStatusDays\Classes\X2DownloadableContentInfo_SortByStatusDays.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>
